@@ -135,7 +135,18 @@ fetch('https://randomuser.me/api/dsfdsfsd')
     const $modalImage = $modal.querySelector('img');
     const $modalDescription = $modal.querySelector('p');
 
+    function showModal() {
+        $overlay.classList.add('active');
+        $modal.style.animation = 'modalIn .8s forwards';
+    }
 
+    $hideModal.addEventListener('click', hideModal);
+
+    function hideModal() {
+        $overlay.classList.remove('active');
+        $modal.style.animation = 'modalOut .8s forwards';
+
+    }
 
 
 })()
