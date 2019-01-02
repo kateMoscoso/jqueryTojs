@@ -1,3 +1,47 @@
+console.log('hola mundo!');
+const noCambia = "Katherin";
+
+let cambia = "@kateMoscoso"
+
+function cambiarNombre(nuevoNombre) {
+    cambia = nuevoNombre
+}
+
+const getUserAll = new Promise(function(todoBien, todoMal) {
+    // llamar a un api
+    setTimeout(function() {
+        // luego de 3 segundos
+        todoBien('se acabó el tiempo');
+    }, 5000)
+})
+
+const getUser = new Promise(function(todoBien, todoMal) {
+    // llamar a un api
+    setTimeout(function() {
+        // luego de 3 segundos
+        todoBien('se acabó el tiempo 3');
+    }, 3000)
+})
+
+// getUser
+//   .then(function() {
+//     console.log('todo está bien en la vida')
+//   })
+//   .catch(function(message) {
+//     console.log(message)
+//   })
+
+Promise.race([
+        getUser,
+        getUserAll,
+    ])
+    .then(function(message) {
+        console.log(message);
+    })
+    .catch(function(message) {
+        console.log(message)
+    })
+
 $.ajax('https://randomuser.me/api/sdfdsfdsfs', {
     method: 'GET',
     success: function(data) {
@@ -133,18 +177,30 @@ fetch('https://randomuser.me/api/dsfdsfsd')
         })
     }
 
-    const { data: { movies: actionList } } = await getData(`${BASE_API}list_movies.json?genre=action`)
-    window.localStorage.setItem('actionList', JSON.stringify(actionList))
+    async function cacheExist(category) {
+        const listName = `${category}List`;
+        const cacheList = window.localStorage.getItem(listName);
+
+        if (cacheList) {
+            return JSON.parse(cacheList);
+        }
+        const { data: { movies: data } } = await getData(`${BASE_API}list_movies.json?genre=${category}`)
+        window.localStorage.setItem(listName, JSON.stringify(data))
+
+        return data;
+    }
+
+    // const { data: { movies: actionList} } = await getData(`${BASE_API}list_movies.json?genre=action`)
+    const actionList = await cacheExist('action');
+    // window.localStorage.setItem('actionList', JSON.stringify(actionList))
     const $actionContainer = document.querySelector('#action');
     renderMovieList(actionList, $actionContainer, 'action');
 
-    const { data: { movies: dramaList } } = await getData(`${BASE_API}list_movies.json?genre=drama`)
-    window.localStorage.setItem('dramaList', JSON.stringify(actionList))
+    const dramaList = await await cacheExist('drama');
     const $dramaContainer = document.getElementById('drama');
     renderMovieList(dramaList, $dramaContainer, 'drama');
 
-    const { data: { movies: animationList } } = await getData(`${BASE_API}list_movies.json?genre=animation`)
-    window.localStorage.setItem('animationList', JSON.stringify(actionList))
+    const animationList = await await cacheExist('animation');
     const $animationContainer = document.getElementById('animation');
     renderMovieList(animationList, $animationContainer, 'animation');
 
